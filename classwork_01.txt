@@ -1,15 +1,29 @@
 CREATE DATABASE IF NOT EXISTS 170225_BAR;
 USE 170225_BAR;
--- 1. Создайте таблицу students с такими столбцами: id (INT), name (VARCHAR), age (INT), grade (DECIMAL).
 
+-- 1. Создайте таблицу students с такими столбцами: id (INT), name (VARCHAR), age (INT), grade (DECIMAL).
+CREATE TABLE IF NOT EXISTS students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name varchar(255),
+    age int,
+    grade decimal(2, 1)
+);
 
 -- 2. Заполните таблицу пятью строками.
+INSERT INTO students ( name, age, grade)
+VALUES 
+( 'John', 20, 2),
+( 'Jane', 18, 1),
+( 'Bob', 22, 3),
+( 'Alice', 19, 2),
+( 'Charlie', 21, 1);
 
 
 -- 3. Создайте индекс на столбец age, чтобы ускорить поиск по возрасту.
-
+CREATE INDEX idx_age ON students (age);
 
 -- 4. Напишите запрос, который выбирает всех студентов определенного возраста.
-
+SELECT * FROM students WHERE age = 22;
 
 -- 5. Просмотрите план выполнения запроса с помощью команды EXPLAIN.
+EXPLAIN SELECT * FROM students WHERE age = 22;

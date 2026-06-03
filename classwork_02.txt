@@ -1,9 +1,30 @@
 /* 1  Создайте функцию для перевода текста в верхний регистр
 Функция принимает строку и возвращает её в верхнем регистре.*/
 
+CREATE FUNCTION up(s text)
+RETURNS text
+DETERMINISTIC
+BEGIN 
+    RETURN UPPER(s);
+END;
+
+SELECT up('needed upper register');
+
 
 /* 2 Функция для проверки, является ли число четным
 Функция принимает целое число и возвращает 1, если оно четное, и 0, если нечетное.*/
+
+SELECT 5 % 2 = 0;
+SELECT 8 % 2 = 0;
+
+CREATE FUNCTION is_even(i int)
+RETURNS bool
+DETERMINISTIC
+BEGIN 
+    RETURN i % 2 = 0;
+END;
+
+SELECT is_even(4);
 
 
 /* 3. Функция для совершеннолетия по дате рождения
@@ -11,7 +32,16 @@
     и возвращает true если возраст >= 18
     и false если нет */
 
+SELECT datediff(now(), date('2020-07-18')) >= 365 * 18;
+
+CREATE FUNCTION is_adult(d date)
+RETURNS bool
+BEGIN 
+    RETURN datediff(now(), d) >= 365 * 18;
+END
+
+SELECT IF(is_adult('1990-11-12'), "true", "false") is_adult;
+
 
 -- Пример для проверки
-SELECT is_adult('2007-05-18'), is_adult('2007-05-28');
-
+SELECT is_adult('2012-05-18'), is_adult('2007-05-28');
