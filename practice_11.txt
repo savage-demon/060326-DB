@@ -1,5 +1,11 @@
 -- 1. Создать функцию для перевода сантиметров в дюймы
+DROP FUNCTION cm_to_inch;
+CREATE FUNCTION cm_to_inch(cm double)
+RETURNS double
+DETERMINISTIC
+RETURN round(cm / 2.55, 2);
 
+SELECT cm_to_inch(100)
 
 /* 2.  Создать функцию для расчета объема шара, если известен радиус, можно воспользоваться следующей формулой:
 V=4/3*πr^3
@@ -8,11 +14,26 @@ V— объем шара,
 r — радиус шара,
 Π≈3.14159 */
 
+CREATE FUNCTION v_sphere(r double)
+RETURNS double
+DETERMINISTIC
+RETURN ROUND(4/3 * PI() * POW(r, 3), 3);
+
+SELECT v_sphere(10.5)
+
 
 /* 3. Функция для перевода градусов в радианы
 
 Для перевода градусов в радианы используется следующая формула:
 радианы=градусы×π/180 */
 
+CREATE FUNCTION grad_to_rad(g double)
+RETURNS double
+DETERMINISTIC
+RETURN ROUND(g * PI() / 180, 3);
 
+SELECT grad_to_rad(360);
+
+
+SELECT pi();
 
