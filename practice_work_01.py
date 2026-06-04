@@ -20,7 +20,7 @@ people = [
 
 example_output = [('Mike', 19), ('Isabella', 19), ('Henry', 19), ('Bob', 20), ('Charlie', 23), ('Jack', 24), ('Alice', 25), ('Grace', 27), ('Kevin', 28), ('Eve', 29), ('Diana', 30), ('Laura', 31), ('Oscar', 33), ('Frank', 33), ('Nancy', 35)]
 
-sorted_people = ...
+sorted_people = sorted(people, key=lambda x: x[1])
 
 print(sorted_people)
 print(sorted_people == example_output)
