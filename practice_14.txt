@@ -2,16 +2,201 @@ use sample_data;
 
 // 1. Из коллекции sample_data.companies: найти компании, основанные в период с 2005 года.
 
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        founded_year: {
+          $gte: 2005
+        }
+      }
+  }
+]
+
 /* 2. Выяснить, сколько из них:
 
 Стартапы (до 30 сотрудников)
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        founded_year: {
+          $gte: 2005
+        }
+      }
+  },
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        number_of_employees: {
+          $lt: 30
+        },
+        number_of_employees: {
+          $gt: 0
+        }
+      }
+  },
+  {
+    $count:
+      /**
+       * Provide the field name for the count.
+       */
+      "Стартапы (до 30 сотрудников)"
+  }
+]
+
+{
+  "Стартапы (до 30 сотрудников)": 2837
+}
+
+
 Средние компании (30-100 сотрудников)
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        founded_year: {
+          $gte: 2005
+        }
+      }
+  },
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        number_of_employees: {
+          $gte: 30
+        },
+        number_of_employees: {
+          $lte: 100
+        }
+      }
+  },
+  {
+    $count:
+      /**
+       * Provide the field name for the count.
+       */
+      "Средние компании (30-100 сотрудников)"
+  }
+]
+
+{
+  "Средние компании (30-100 сотрудников)": 2791
+}
+
 Крупные компании (100-1000 сотрудников)
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        founded_year: {
+          $gte: 2005
+        }
+      }
+  },
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        number_of_employees: {
+          $gte: 100
+        },
+        number_of_employees: {
+          $lte: 1000
+        }
+      }
+  },
+  {
+    $count:
+      /**
+       * Provide the field name for the count.
+       */
+      "Крупные компании (100-1000 сотрудников)"
+  }
+]
+
+{
+  "Крупные компании (100-1000 сотрудников)": 2883
+}
+
 Очень большие компании (свыше 1000 сотрудников)
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        founded_year: {
+          $gte: 2005
+        }
+      }
+  },
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        number_of_employees: {
+          $gt: 1000
+        }
+      }
+  },
+  {
+    $count:
+      /**
+       * Provide the field name for the count.
+       */
+      "Очень большие компании (свыше 1000 сотрудников)"
+  }
+]
+
+{
+  "Очень большие компании (свыше 1000 сотрудников)": 8
+}
 
 * Особенность базы - есть компании с количеством сотрудников 0. Их лучше не учитывать. */
 
 // 3. Составьте список из 5 самых больших поглощений (acquisition) компаний по цене.
+[
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        "acquisition.price_amount": -1
+      }
+  },
+  {
+    $limit:
+      /**
+       * Provide the number of documents to limit.
+       */
+      5
+  }
+]
 
 /* 4. Для пяти самых больших поглощений (acquisition) найдите:
  - списки подтверждающих материалов (source_url)
@@ -19,14 +204,143 @@ use sample_data;
  - имя участника сделки
  - и сумму сделки */
 
+[
+  {
+    $sort:
+      /**
+       * Provide any number of field/order pairs.
+       */
+      {
+        "acquisition.price_amount": -1
+      }
+  },
+  {
+    $limit:
+      /**
+       * Provide the number of documents to limit.
+       */
+      5
+  },
+  {
+    $project:
+      /**
+       * specifications: The fields to
+       *   include or exclude.
+       */
+      {
+        source_url: "$acquisition.source_url",
+        company_name:
+          "$acquisition.acquiring_company.name",
+        price_amount: "$acquisition.price_amount",
+        name: "$name"
+      }
+  }
+]
+
 // 5. Составьте список компаний, которые привлекли инвестиции (total_money_raised).
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        total_money_raised: {
+          $ne: ""
+        }
+      }
+  }
+]
+
 
 // 6. Узнайте, сколько их?
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        total_money_raised: {
+          $ne: ""
+        }
+      }
+  },
+  {
+    $count:
+      /**
+       * Provide the field name for the count.
+       */
+      "Количество компаний привлекших инвестиции"
+  }
+]
+
+{
+  "Количество компаний привлекших инвестиции": 9500
+}
 
 /* 7. Составьте список компаний, инвестиции которых оценены в долларах и их сумма более 1 миллиона.
 (total_money_raised - строковое поле, поэтому используйте регулярное выражение $regex) */
 
+[
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        total_money_raised: {
+          $ne: ""
+        },
+        total_money_raised: {
+          $regex: /^\$\d+(\.\d+)?M$/
+        }
+      }
+  },
+  {
+    $addFields:
+      /**
+       * newField: The new field name.
+       * expression: The new field expression.
+       */
+      {
+        total_mil_raised: {
+          $toDouble: {
+            $trim: {
+              input: "$total_money_raised",
+              chars: {
+                $literal: "$M"
+              }
+            }
+          }
+        }
+      }
+  },
+  {
+    $match:
+      /**
+       * query: The query in MQL.
+       */
+      {
+        total_mil_raised: {
+          $gt: 1
+        }
+      }
+  },
+  {
+    $count:
+      /**
+       * Provide the field name for the count.
+       */
+      "Количество компаний привлекших инвестиции в долларах на сумму более 1 миллиона"
+  }
+]
+
 // 8. Сколько таких компаний?
+
+{
+  "Количество компаний привлекших инвестиции в долларах на сумму более 1 миллиона": 1885
+}
 
 // 9. Коллекция  sample_data.trips: сколько длилась сама долгая аренда велосипеда?
 
